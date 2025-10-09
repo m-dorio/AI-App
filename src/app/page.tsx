@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from 'next/image';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
@@ -73,19 +74,40 @@ export default function Page() {
     <main className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-12 max-w-5xl">
         {/* Header */}
-        <div className="text-center mb-12 space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-            <Sparkles className="w-4 h-4" />
-            <span>AI-Powered Analysis</span>
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-20 mb-12">
+          {/* Left Column (Image & Name Link) */}
+          <div className="flex flex-col items-center md:items-start text-center md:text-left space-y-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/30 hover:bg-primary/40 text-primary text-sm font-medium">
+              <a href="https://michaelangelodorio.com" title="Visit my portfolio">
+                <span>michaelangelodorio</span>
+              </a>
+            </div>
+            <Image
+              src="/images/about-image2b-sm.png"
+              alt="About me"
+              width={140}
+              height={140}
+              className="object-cover rounded-full border-2 border-primary"
+              priority
+            />
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-balance">
-            Text Analysis
-            <span className="block text-primary mt-2">Made Simple</span>
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
-            Leverage advanced AI models to summarize, analyze sentiment, and generate embeddings from your text data
-          </p>
+
+          {/* Right Column (Text Content) */}
+          <div className="flex-1 text-center md:text-left space-y-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 hover:bg-primary/40 text-primary text-sm font-medium">
+              <Sparkles className="w-4 h-4" />
+              <span>AI-Powered Analysis</span>
+            </div>
+            <h1 className="text-5xl md:text-4xl font-bold tracking-tight text-balance">
+              Text Analysis
+              <span className="block text-primary mt-2">Made Simple</span>
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl text-pretty">
+              Leverage advanced AI models to summarize, analyze sentiment, and generate embeddings from your text data
+            </p>
+          </div>
         </div>
+
 
         {/* Main Content */}
         <div className="space-y-6">
