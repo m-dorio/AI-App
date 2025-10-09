@@ -5,7 +5,7 @@ const HF_API_KEY = process.env.HF_API_KEY!;
 const MODEL_MAP: Record<string, string> = {
     summarize: 'facebook/bart-large-cnn',
     sentiment: 'distilbert/distilbert-base-uncased-finetuned-sst-2-english',
-    embed: 'sentence-transformers/all-MiniLM-L6-v2',
+    embed: 'sentence-transformers/paraphrase-albert-small-v2', // Known working model
 };
 
 export async function POST(req: Request) {
@@ -21,14 +21,17 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
         }
 
-        // Prepare body for Hugging Face request
-        const body =
-            action === 'embed'
-                ? { inputs: [text] }
-                : { inputs: text };
+        const apiUrl = `https://api-inference.huggingface.co/models/${model}`;
+        const body = {
+            inputs: text,
+            options: {
+                wait_for_model: true
+            }
+        };
 
-        // Fetch from Hugging Face
-        const res = await fetch(`https://api-inference.huggingface.co/models/${model}`, {
+        console.log(`Making request to: ${apiUrl}`);
+
+        const res = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${HF_API_KEY}`,
@@ -45,8 +48,9 @@ export async function POST(req: Request) {
 
         const data = await res.json();
         return NextResponse.json({ model, data, status: 200 });
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error('Server error:', err);
-        return NextResponse.json({ error: err.message }, { status: 500 });
+        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }

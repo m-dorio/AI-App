@@ -8,10 +8,31 @@ import { Sparkles, Brain, TrendingUp, Loader2, FileText, BarChart3 } from "lucid
 
 type ActionType = "summarize" | "sentiment" | "embed"
 
+// Define proper types for the API response
+interface SummaryResult {
+  summary_text: string;
+}
+
+interface SentimentResult {
+  label: string;
+  score: number;
+}
+
+type AnalysisResult = {
+  model: string;
+  data:
+  | { summary_text: string }[] // For summarize
+  | SentimentResult[][] // For sentiment  
+  | number[] // For embeddings
+  ;
+  status?: number;
+  error?: string;
+};
+
 export default function Page() {
   const [text, setText] = useState("")
   const [action, setAction] = useState<ActionType>("summarize")
-  const [result, setResult] = useState<any>(null)
+  const [result, setResult] = useState<AnalysisResult | null>(null)
   const [loading, setLoading] = useState(false)
 
   async function analyze() {
@@ -40,12 +61,12 @@ export default function Page() {
       description: "Analyze emotional tone",
       icon: TrendingUp,
     },
-    {
-      id: "embed" as ActionType,
-      label: "Embed",
-      description: "Generate vector embeddings",
-      icon: BarChart3,
-    },
+    // {
+    //   id: "embed" as ActionType,
+    //   label: "Embed",
+    //   description: "Generate vector embeddings",
+    //   icon: BarChart3,
+    // },
   ]
 
   return (
@@ -97,8 +118,8 @@ export default function Page() {
                   key={item.id}
                   onClick={() => setAction(item.id)}
                   className={`relative p-6 rounded-lg border-2 transition-all text-left ${isSelected
-                      ? "border-primary bg-primary/5 shadow-lg shadow-primary/20"
-                      : "border-border bg-card hover:border-primary/50 hover:bg-card/80"
+                    ? "border-primary bg-primary/5 shadow-lg shadow-primary/20"
+                    : "border-border bg-card hover:border-primary/50 hover:bg-card/80"
                     }`}
                 >
                   <div className="flex items-start gap-4">
@@ -156,37 +177,37 @@ export default function Page() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {result.model.includes("bart-large-cnn") && result.data[0]?.summary_text && (
+                {result.model.includes("bart-large-cnn") && Array.isArray(result.data) && (
                   <div className="p-6 rounded-lg bg-primary/5 border border-primary/20">
                     <div className="flex items-start gap-3">
                       <FileText className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                       <div>
                         <h4 className="font-semibold text-lg mb-2">Summary</h4>
-                        <p className="text-foreground leading-relaxed">{result.data[0].summary_text}</p>
+                        <p className="text-foreground leading-relaxed">{(result.data[0] as SummaryResult)?.summary_text}</p>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {result.model.includes("distilbert") && result.data[0]?.[0] && (
+                {result.model.includes("distilbert") && Array.isArray(result.data) && (
                   <div className="p-6 rounded-lg bg-primary/5 border border-primary/20">
                     <div className="flex items-start gap-3">
                       <TrendingUp className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                       <div className="flex-1">
                         <h4 className="font-semibold text-lg mb-3">Sentiment Analysis</h4>
                         <div className="flex items-center gap-4">
-                          <span className="text-2xl font-bold text-primary">{result.data[0][0].label}</span>
+                          <span className="text-2xl font-bold text-primary">{(result.data[0] as SentimentResult[])?.[0]?.label}</span>
                           <div className="flex-1">
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-sm text-muted-foreground">Confidence</span>
                               <span className="text-sm font-semibold">
-                                {(result.data[0][0].score * 100).toFixed(1)}%
+                                {((result.data[0] as SentimentResult[])?.[0]?.score * 100).toFixed(1)}%
                               </span>
                             </div>
                             <div className="h-2 bg-muted rounded-full overflow-hidden">
                               <div
                                 className="h-full bg-primary rounded-full transition-all"
-                                style={{ width: `${result.data[0][0].score * 100}%` }}
+                                style={{ width: `${((result.data[0] as SentimentResult[])?.[0]?.score * 100) || 0}%` }}
                               />
                             </div>
                           </div>
@@ -196,14 +217,14 @@ export default function Page() {
                   </div>
                 )}
 
-                {result.model.includes("embed") && (
+                {!result.model.includes("embed") && (
                   <div className="p-6 rounded-lg bg-primary/5 border border-primary/20">
                     <div className="flex items-start gap-3">
                       <BarChart3 className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                       <div>
                         <h4 className="font-semibold text-lg mb-2">Vector Embeddings</h4>
                         <p className="text-muted-foreground text-sm">
-                          Generated {result.data?.length || 0} dimensional vector representation
+                          Generated {Array.isArray(result.data) ? result.data.length : 0} dimensional vector representation
                         </p>
                       </div>
                     </div>
