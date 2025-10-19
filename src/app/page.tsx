@@ -324,19 +324,19 @@ export default function Page() {
               </a>
             </div>
             <a target="_blank" href="https://www.linkedin.com/in/michael-angelo-dorio-17510182/" title="Let's Connect!">
-            <Image
-              src="/images/about-image2b-sm.png"
-              alt="About me"
-              width={140}
-              height={140}
-              className="object-cover rounded-full border-2 border-primary"
-              priority
+              <Image
+                src="/images/about-image2b-sm.png"
+                alt="About me"
+                width={140}
+                height={140}
+                className="object-cover rounded-full border-2 border-primary"
+                priority
               /></a>
           </div>
 
           {/* Right Column (Text Content) */}
           <div className="flex-1 text-center md:text-left space-y-4">
-           
+
             <div className="flex gap-2.5 w-full  mb-12">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 hover:bg-primary/40 text-primary text-sm font-medium">
                 <Sparkles className="w-4 h-4" />
@@ -361,11 +361,21 @@ export default function Page() {
           </div>
         </div>
 
+        <div className="space-y-6 mb-20">
+          <Card className="border-2">
+            <CardHeader>
+              <CardTitle className="text-lg">About Image Captioning</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                This project integrates multiple APIs and open-source frameworks to deliver intelligent insights, including caption generation, content understanding, and contextual analysis. (Some tools currently run on free-tier services, which may affect processing time or model availability.)</p>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* TEXT ANALYSIS SECTION */}
-        <div className="space-y-6  mb-20 ">
-          
-          <p> This project integrates multiple APIs and open-source frameworks to deliver intelligent insights, including caption generation, content understanding, and contextual analysis. (Some tools currently run on free-tier services, which may affect processing time or model availability.)</p>
-          
+        <div className="space-y-6 mb-20">
+
           <div className="flex items-center gap-2 mb-6">
             <Brain className="w-6 h-6 text-primary" />
             <h2 className="text-2xl font-bold">Text Analysis</h2>
