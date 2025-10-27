@@ -379,6 +379,7 @@ export default function Page() {
           <div className="flex items-center gap-2 mb-6">
             <Brain className="w-6 h-6 text-primary" />
             <h2 className="text-2xl font-bold">Text Analysis</h2>
+            <p className="mb-0">(Originally built as part of my J.P. Morgan interview project.)</p>
           </div>
           {/* Input Card */}
           <Card className="border-2">
